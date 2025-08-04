@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GeoJSON Exporter</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://extension-api.tableau.com/extensions-api/tableau.extensions.2.latest.js"></script>
+
+  <script src="main.js"></script>
+
+</head>
+<body>
+  <div class="container mt-3">
+
+    <h4>Export Data to GeoJSON</h4>
+    <p>Select a worksheet with latitude and longitude data and click the button to export it.</p>
+
+    <div class="mb-3">
+      <label for="worksheet-select" class="form-label">Select Worksheet:</label>
+      <select id="worksheet-select" class="form-select"></select>
+    </div>
+
+    <button id="export-button" class="btn btn-primary">Export as GeoJSON</button>
+
+  </div>
+
+</body>
+</html>
