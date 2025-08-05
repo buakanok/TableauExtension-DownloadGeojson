@@ -45,11 +45,12 @@ function exportGeoJSON() {
             const data = dataTable.data;
 
             // Find the indices of the latitude and longitude columns.
-            const latIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
-            const lonIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('longitude'));
+            // const latIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
+            // const lonIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('longitude'));
+            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('shape gps'));
 
-            if (latIndex === -1 || lonIndex === -1) {
-                alert("Latitude and/or Longitude fields not found in the selected worksheet.");
+            if (shapeGpsIndex === -1) {
+                alert("Shape GPS column not found in the selected worksheet.");
                 return;
             }
 
@@ -59,17 +60,18 @@ function exportGeoJSON() {
             };
 
             data.forEach(function (row) {
-                const latitude = parseFloat(row[latIndex].value);
-                const longitude = parseFloat(row[lonIndex].value);
+                // const latitude = parseFloat(row[latIndex].value);
+                // const longitude = parseFloat(row[lonIndex].value);
+                const shapeGps = JSON.parse(row[shapeGpsIndex].value); 
 
-                if (isNaN(latitude) || isNaN(longitude)) {
+                if (isNaN(shapeGps)) {
                     return;
                 }
 
                 // Construct the properties object for the feature.
                 const properties = {};
                 columns.forEach(function (col, index) {
-                    if (index !== latIndex && index !== lonIndex) {
+                    if (index !== shapeGpsIndex) {
                         properties[col.fieldName] = row[index].value;
                     }
                 });
@@ -77,10 +79,7 @@ function exportGeoJSON() {
                 // Construct the GeoJSON Feature.
                 const feature = {
                     type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [longitude, latitude] // GeoJSON uses [longitude, latitude]
-                    },
+                    geometry: shapeGps,
                     properties: properties
                 };
                 geojson.features.push(feature);
