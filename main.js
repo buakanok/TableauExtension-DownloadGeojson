@@ -47,7 +47,7 @@ function exportGeoJSON() {
             // Find the indices of the latitude and longitude columns.
             // const latIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
             // const lonIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('longitude'));
-            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('gps'));
+            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('json'));
 
             if (shapeGpsIndex === -1) {
                 alert("Shape GPS column not found in the selected worksheet.");
@@ -62,7 +62,7 @@ function exportGeoJSON() {
             data.forEach(function (row) {
                 // const latitude = parseFloat(row[latIndex].value);
                 // const longitude = parseFloat(row[lonIndex].value);
-                const shapeGps = JSON.parse(row[shapeGpsIndex].value); 
+                const shapeGps = row[shapeGpsIndex].value; 
 
                 if (isNaN(shapeGps)) {
                     return;
@@ -79,10 +79,7 @@ function exportGeoJSON() {
                 // Construct the GeoJSON Feature.
                 const feature = {
                     type: 'Feature',
-                    geometry: {
-                        type: shapeGps['type'],
-                        coordinates: shapeGps['coordinates'] // GeoJSON uses [longitude, latitude]
-                    },
+                    geometry: shapeGps,
                     properties: properties
                 };
                 geojson.features.push(feature);
