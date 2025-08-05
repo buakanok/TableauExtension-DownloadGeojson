@@ -47,7 +47,7 @@ function exportGeoJSON() {
             // Find the indices of the latitude and longitude columns.
             // const latIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
             // const lonIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('longitude'));
-            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('json'));
+            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
 
             if (shapeGpsIndex === -1) {
                 alert("Shape GPS column not found in the selected worksheet.");
