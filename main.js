@@ -47,7 +47,7 @@ function exportGeoJSON() {
             // Find the indices of the latitude and longitude columns.
             // const latIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
             // const lonIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('longitude'));
-            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('latitude'));
+            const shapeGpsIndex = columns.findIndex(col => col.fieldName.toLowerCase().includes('json'));
 
             if (shapeGpsIndex === -1) {
                 alert("Shape GPS column not found in the selected worksheet.");
@@ -64,29 +64,42 @@ function exportGeoJSON() {
                 // const longitude = parseFloat(row[lonIndex].value);
                 const shapeGps = row[shapeGpsIndex].value; 
 
-                if (isNaN(shapeGps)) {
-                    return;
-                }
+                try {
+                    const shapeGpsObject = JSON.parse(shapeGps);
+                    if (shapeGpsObject && shapeGpsObject.type && shapeGpsObject.coordinates) {
 
-                // Construct the properties object for the feature.
-                const properties = {};
-                columns.forEach(function (col, index) {
-                    if (index !== shapeGpsIndex) {
-                        properties[col.fieldName] = row[index].value;
+                        // Construct the properties object for the feature.
+                        const properties = {};
+                        columns.forEach(function (col, index) {
+                            if (index !== shapeGpsIndex) {
+                                properties[col.fieldName] = row[index].value;
+                            }
+                        });
+
+                        // Construct the GeoJSON Feature.
+                        const feature = {
+                            type: 'Feature',
+                            // geometry: {
+                            //     type: 'Point',
+                            //     coordinates: [longitude, latitude] // GeoJSON uses [longitude, latitude]
+                            // },
+                            geometry: shapeGpsObject, 
+                            properties: properties
+                        };
+                        geojson.features.push(feature);
                     }
-                });
-
-                // Construct the GeoJSON Feature.
-                const feature = {
-                    type: 'Feature',
-                    geometry: shapeGps,
-                    properties: properties
-                };
-                geojson.features.push(feature);
+                } catch (e) {
+                    console.error("Failed to parse GeoJSON string:", shapeGps, "Error:", e);
+                    // You might want to add an alert here for the user if a row is skipped.
+                }
             });
 
-            const geojsonString = JSON.stringify(geojson, null, 2);
+            if (geojson.features.length === 0) {
+                alert("No valid GeoJSON data was found in the selected worksheet.");
+                return;
+            }
 
+            const geojsonString = JSON.stringify(geojson, null, 2);
             downloadFile(geojsonString, 'exported_data.geojson', 'application/json');
         });
     } else {
