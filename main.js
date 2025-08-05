@@ -79,7 +79,10 @@ function exportGeoJSON() {
                 // Construct the GeoJSON Feature.
                 const feature = {
                     type: 'Feature',
-                    geometry: shapeGps,
+                    geometry: {
+                        type: shapeGps['type'],
+                        coordinates: shapeGps['coordinates'] // GeoJSON uses [longitude, latitude]
+                    },
                     properties: properties
                 };
                 geojson.features.push(feature);
